@@ -27,7 +27,6 @@
             cursor: pointer;
         }
 
-        /* Container that scales for phone view */
         #autoscale-container {
             transform-origin: top center;
             display: flex;
@@ -37,13 +36,11 @@
 
         .seating-wrapper {
             background-color: #fce1e2;
-            /* Padding reduced to 0 on sides to touch the grid edges */
             padding: 10px 0px; 
             border: 1px solid #e0a3a9;
             border-radius: 4px;
             display: inline-block;
             text-align: center;
-            /* min-width removed so it hugs the internal content perfectly */
             width: auto; 
         }
 
@@ -56,10 +53,8 @@
 
         .classroom-container { 
             display: flex; 
-            /* Spacing between Block Left and Block Right preserved */
             gap: 30px; 
             justify-content: center;
-            /* Added small margin to ensure grid doesn't touch the border line */
             margin: 0 10px; 
         }
 
@@ -75,7 +70,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            /* Updated Font Size for IDs inside grids */
+            font-size: 13px; 
             font-weight: bold;
         }
 
@@ -89,6 +85,13 @@
             width: 95%;
             max-width: 400px;
             box-sizing: border-box;
+        }
+
+        .sidebar-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .sidebar-columns { display: flex; justify-content: space-around; font-size: 13px; line-height: 1.6; }
@@ -111,7 +114,7 @@
     </div>
 
     <div class="sidebar">
-        <center><strong>Student List FAET SAU</strong></center><br>
+        <div class="sidebar-title">Student List of FAET,SAU (Session 2023-24)</div>
         <div class="sidebar-columns">
             <div id="listCol1"></div>
             <div id="listCol2"></div>
