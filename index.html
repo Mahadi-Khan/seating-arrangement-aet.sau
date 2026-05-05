@@ -3,32 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classroom Seat Shuffler</title>
+    <title>FAET SAU Seating Shuffler</title>
     <style>
+        /* General Page Styles */
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #f4f4f4; 
             margin: 0; 
-            padding: 20px; 
+            padding: 10px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .header-controls {
             text-align: center;
-            margin-bottom: 30px;
+            margin: 20px 0;
+            width: 100%;
         }
 
         button { 
-            padding: 12px 28px; 
+            padding: 14px 30px; 
             cursor: pointer; 
             background: #e4eb39; 
             color: black; 
-            border: 1px solid #cccc3a; 
+            border: 2px solid #cccc3a; 
             font-weight: bold; 
-            border-radius: 4px;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s, background 0.2s;
         }
         button:hover { background: #dcd030; }
+        button:active { transform: scale(0.98); }
 
         .main-layout {
             display: flex;
@@ -36,78 +43,51 @@
             gap: 30px;
             align-items: flex-start;
             flex-wrap: wrap;
+            width: 100%;
         }
 
-        /* Student List Sidebar */
-        .sidebar {
-            background: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 320px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        /* Seating Area Container - Pink background */
+        .seating-wrapper {
             order: 1;
-        }
-
-        .sidebar-title {
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-            text-align: center;
-            color: #333;
-        }
-
-        /* Two distinct columns for the student list */
-        .sidebar-columns {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            font-size: 11px;
-            line-height: 1.6;
-            color: #555;
-        }
-
-        .list-col {
-            display: flex;
-            flex-direction: column;
-            width: 48%;
-        }
-
-        /* Seating Area - Pink background confined */
-        .seating-area {
-            background-color: #fce1e2; 
-            padding: 40px;
-            border-radius: 8px;
-            text-align: center;
-            order: 2;
+            background-color: #fce1e2;
+            padding: 30px;
+            border-radius: 12px;
             border: 1px solid #e0a3a9;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 100%;
+            overflow: hidden; /* Prevents dragging/scrolling on phone */
+        }
+
+        .seating-area {
+            text-align: center;
+            transform-origin: top center;
         }
 
         .title-text {
-            font-size: 28px;
+            font-size: 26px;
             text-decoration: underline;
             color: black;
             font-weight: normal;
-            margin: 0 0 30px 0;
+            margin: 0 0 25px 0;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .classroom-container { 
             display: inline-flex;
-            gap: 40px; 
+            gap: 30px; 
         }
 
-        .block { display: flex; gap: 10px; flex-direction: row-reverse; }
-        .column { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .col-label { font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #333; }
+        .block { display: flex; gap: 8px; flex-direction: row-reverse; }
+        .column { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+        .col-label { font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #333; }
 
         .seat {
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             background-color: #fbe5cd; 
             border: 1px solid #c5a687; 
             display: flex;
@@ -119,16 +99,77 @@
         }
 
         .door-space { 
-            width: 52px; 
-            height: 52px; 
+            width: 48px; 
+            height: 48px; 
             background-color: white; 
             border: 1px solid #eee; 
         }
 
+        /* Student List Sidebar */
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 320px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            order: 2;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #fce1e2;
+            padding-bottom: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        .sidebar-columns {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .list-col { display: flex; flex-direction: column; width: 48%; }
+
+        /* --- MOBILE AUTOFIT LOGIC --- */
         @media (max-width: 950px) {
             .main-layout { flex-direction: column; align-items: center; }
-            .sidebar { order: 3; width: 90%; max-width: 450px; margin-top: 20px; }
-            .seating-area { order: 1; width: 100%; overflow-x: auto; padding: 20px 10px; }
+            
+            /* Shrinks the 12 columns to fit the width of a phone screen */
+            .seating-area {
+                transform: scale(0.42); 
+                width: 850px; /* Internal fixed width to keep grid shape */
+                margin-bottom: -430px; /* Pulls sidebar up to remove empty space */
+            }
+            
+            .seating-wrapper {
+                padding: 15px 5px;
+                width: 100%;
+                border-left: none;
+                border-right: none;
+                border-radius: 0;
+            }
+
+            .sidebar {
+                width: 95%;
+                margin-top: 20px;
+                box-sizing: border-box;
+            }
+            
+            .title-text { font-size: 20px; }
+        }
+
+        /* Extra small phones adjustment */
+        @media (max-width: 400px) {
+            .seating-area {
+                transform: scale(0.36);
+                margin-bottom: -490px;
+            }
         }
     </style>
 </head>
@@ -139,14 +180,18 @@
     </div>
 
     <div class="main-layout">
-        <div class="seating-area">
-            <h1 class="title-text">SEATING ARRANGEMENT</h1>
-            <div class="classroom-container">
-                <div id="block-left" class="block"></div>
-                <div id="block-right" class="block"></div>
+        <!-- Seating Grid -->
+        <div class="seating-wrapper">
+            <div class="seating-area">
+                <h1 class="title-text">SEATING ARRANGEMENT</h1>
+                <div class="classroom-container">
+                    <div id="block-left" class="block"></div>
+                    <div id="block-right" class="block"></div>
+                </div>
             </div>
         </div>
 
+        <!-- Student List -->
         <div class="sidebar">
             <div class="sidebar-title">Student List of FAET, SAU<br>(Session: 2023-2024)</div>
             <div class="sidebar-columns">
@@ -166,6 +211,7 @@
             "02", "03", "05", "06", "08", "09", "10", "11", "13", "14", "15", "16", "17", "19", "20", "21", "22", "23", "24", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "41", "44", "46", "47", "48", "49", "50", "51", "52", "53", "55", "56", "57", "58", "60", "61", "62", "63", "64", "Re-05", "Re-28"
         ];
 
+        // 1 = Seat, 0 = White Door Space
         const roomTemplate = [
             [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], 
             [1, 1, 1, 1, 1], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], 
@@ -174,12 +220,14 @@
         ];
 
         function shuffleAndAssign() {
+            // Sort to ensure logic remains consistent
             let sorted = [...shuffleIDs].sort((a, b) => {
                 let aVal = a.includes('Re') ? parseInt(a.split('-')[1]) + 100 : parseInt(a);
                 let bVal = b.includes('Re') ? parseInt(b.split('-')[1]) + 100 : parseInt(b);
                 return aVal - bVal;
             });
 
+            // Randomize the 12 column sequences
             let colOrder = Array.from({length: 12}, (_, i) => i);
             for (let i = colOrder.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -206,10 +254,11 @@
             
             left.innerHTML = ''; right.innerHTML = ''; col1.innerHTML = ''; col2.innerHTML = '';
 
-            // Split list at 2405032
+            // Split student list at 2405032 for vertical order
             fullList.forEach(id => {
                 const div = document.createElement('div');
                 div.innerText = id;
+                // Column 1: Up to 32 (Session 24)
                 if (parseInt(id.slice(-3)) <= 32 && id.startsWith("24")) {
                     col1.appendChild(div);
                 } else {
@@ -217,6 +266,7 @@
                 }
             });
 
+            // Draw the classroom grid
             for (let i = 0; i < 12; i++) {
                 const col = document.createElement('div');
                 col.className = 'column';
@@ -231,6 +281,8 @@
                     else { div.className = 'seat'; div.innerText = val; }
                     col.appendChild(div);
                 });
+                
+                // Columns 1-6 on right, 7-12 on left (Matches image_e47adf.png logic)
                 if (i < 6) right.appendChild(col); else left.appendChild(col);
             }
         }
