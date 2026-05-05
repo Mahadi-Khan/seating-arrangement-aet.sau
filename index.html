@@ -27,11 +27,19 @@
             cursor: pointer;
         }
 
+        /* Main layout container */
+        .main-content {
+            display: flex;
+            flex-direction: column; /* Default: Stacked for mobile */
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
         #autoscale-container {
             transform-origin: top center;
             display: flex;
             justify-content: center;
-            width: 100%;
         }
 
         .seating-wrapper {
@@ -79,7 +87,6 @@
         .sidebar {
             background: white;
             padding: 15px;
-            margin-top: 10px;
             border: 1px solid #ddd;
             width: 95%;
             max-width: 400px;
@@ -95,6 +102,23 @@
         }
 
         .sidebar-columns { display: flex; justify-content: space-around; font-size: 13px; line-height: 1.6; }
+
+        /* PC View: Side-by-side layout */
+        @media (min-width: 1024px) {
+            .main-content {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: center;
+                padding-top: 20px;
+            }
+            #autoscale-container {
+                transform: none !important; /* Disable scaling on PC */
+                margin-bottom: 0 !important;
+            }
+            .sidebar {
+                margin-top: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -103,24 +127,26 @@
         <button onclick="shuffleAndAssign()">Shuffle Seating Arrangement</button>
     </div>
 
-    <div id="autoscale-container">
-        <div class="seating-wrapper" id="room-box">
-            <h1 class="title-text">SEATING ARRANGEMENT</h1>
-            <div class="classroom-container">
-                <div id="block-left" class="block"></div>
-                <div id="block-right" class="block"></div>
+    <div class="main-content">
+        <div id="autoscale-container">
+            <div class="seating-wrapper" id="room-box">
+                <h1 class="title-text">SEATING ARRANGEMENT</h1>
+                <div class="classroom-container">
+                    <div id="block-left" class="block"></div>
+                    <div id="block-right" class="block"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="sidebar">
-        <div class="sidebar-title">
-            Student List of FAET, SAU<br>
-            Session 2023-24
-        </div>
-        <div class="sidebar-columns">
-            <div id="listCol1"></div>
-            <div id="listCol2"></div>
+        <div class="sidebar">
+            <div class="sidebar-title">
+                Student List of FAET, SAU<br>
+                Session 2023-24
+            </div>
+            <div class="sidebar-columns">
+                <div id="listCol1"></div>
+                <div id="listCol2"></div>
+            </div>
         </div>
     </div>
 
@@ -130,6 +156,8 @@
         const roomTemplate = [[1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 0]];
 
         function autoFit() {
+            if (window.innerWidth >= 1024) return; // Don't scale on PC
+            
             const container = document.getElementById('autoscale-container');
             const room = document.getElementById('room-box');
             const screenWidth = window.innerWidth - 10; 
