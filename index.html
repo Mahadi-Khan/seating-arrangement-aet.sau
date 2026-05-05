@@ -9,14 +9,14 @@
             font-family: sans-serif; 
             background-color: #f4f4f4; 
             margin: 0; 
-            padding: 10px;
+            padding: 5px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden; /* Prevents side-to-side dragging */
+            overflow-x: hidden; 
         }
 
-        .header-controls { margin-bottom: 15px; }
+        .header-controls { margin: 10px 0; }
 
         button { 
             padding: 12px 24px; 
@@ -27,10 +27,9 @@
             cursor: pointer;
         }
 
-        /* The Scaler: This is the magic part */
+        /* Scaling logic for full-width phone view */
         #autoscale-container {
             transform-origin: top center;
-            transition: transform 0.2s;
             display: flex;
             justify-content: center;
             width: 100%;
@@ -38,30 +37,33 @@
 
         .seating-wrapper {
             background-color: #fce1e2;
-            padding: 20px;
+            /* Removed large side padding to pull the pink box edges close to grids */
+            padding: 10px 4px; 
             border: 1px solid #e0a3a9;
-            border-radius: 8px;
+            border-radius: 4px;
             display: inline-block;
             text-align: center;
-            min-width: 820px; /* Forces the room to stay wide internally */
+            /* Internal width maintained to keep original spacing */
+            min-width: 800px; 
         }
 
         .title-text {
-            font-size: 24px;
+            font-size: 18px;
             text-decoration: underline;
-            margin-bottom: 20px;
+            margin: 0 0 15px 0;
             text-transform: uppercase;
         }
 
         .classroom-container { 
             display: flex; 
+            /* Kept the perfect spacing between blocks as per image_db633b.jpg */
             gap: 30px; 
             justify-content: center;
         }
 
         .block { display: flex; gap: 8px; flex-direction: row-reverse; }
         .column { display: flex; flex-direction: column; gap: 8px; align-items: center; }
-        .col-label { font-weight: bold; font-size: 14px; }
+        .col-label { font-weight: bold; font-size: 13px; margin-bottom: 2px; }
 
         .seat {
             width: 45px;
@@ -80,10 +82,11 @@
         .sidebar {
             background: white;
             padding: 15px;
-            margin-top: 20px;
+            margin-top: 5px;
             border: 1px solid #ddd;
-            width: 90%;
+            width: 95%;
             max-width: 400px;
+            box-sizing: border-box;
         }
 
         .sidebar-columns { display: flex; justify-content: space-around; font-size: 13px; line-height: 1.6; }
@@ -95,7 +98,6 @@
         <button onclick="shuffleAndAssign()">Shuffle Seating Arrangement</button>
     </div>
 
-    <!-- This div will be automatically scaled by the JavaScript below -->
     <div id="autoscale-container">
         <div class="seating-wrapper" id="room-box">
             <h1 class="title-text">SEATING ARRANGEMENT</h1>
@@ -119,17 +121,15 @@
         const fullList = ["2405002", "2405003", "2405005", "2405006", "2405008", "2405009", "2405010", "2405011", "2405013", "2405014", "2405015", "2405016", "2405017", "2405019", "2405020", "2405021", "2405022", "2405023", "2405024", "2405026", "2405027", "2405028", "2405029", "2405030", "2405031", "2405032", "2405033", "2405034", "2405035", "2405036", "2405037", "2405038", "2405039", "2405041", "2405044", "2405046", "2405047", "2405048", "2405049", "2405050", "2405051", "2405052", "2405053", "2405055", "2405056", "2405057", "2405058", "2405060", "2405061", "2405062", "2405063", "2405064", "2305005", "2305028"];
         const roomTemplate = [[1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 0]];
 
-        // FUNCTION TO FIT THE ROOM ON SCREEN
         function autoFit() {
             const container = document.getElementById('autoscale-container');
             const room = document.getElementById('room-box');
-            const screenWidth = window.innerWidth - 20; // 20px padding
+            const screenWidth = window.innerWidth - 10; 
             const roomWidth = room.offsetWidth;
 
             if (screenWidth < roomWidth) {
                 const scaleAmount = screenWidth / roomWidth;
                 container.style.transform = `scale(${scaleAmount})`;
-                // Adjust margin so sidebar doesn't have a huge gap
                 container.style.marginBottom = `-${room.offsetHeight * (1 - scaleAmount)}px`;
             } else {
                 container.style.transform = `scale(1)`;
@@ -146,7 +146,7 @@
                 roomTemplate[cIdx].forEach(isSeat => assignments[cIdx].push(isSeat ? (sorted[sIdx++] || "") : null));
             });
             render(assignments);
-            autoFit(); // Fit to screen after rendering
+            autoFit();
         }
 
         function render(assignments) {
